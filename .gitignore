@@ -1,0 +1,6 @@
+.cached_files/
+.ipynb_checkpoints/
+cache.sqlite
+topics*/
+*__pycache__/
+*.txt
