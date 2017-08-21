@@ -17,12 +17,24 @@ N_TOP_WORDS = 10
 N_TOPICS = 20
 LEARNING_OFFSET = 3.
 
+# doc_topic_prior : float, optional (default=None)
+# Prior of document topic distribution theta. If the value is None,
+ # defaults to 1 / n_components. In the literature, this is called alpha.
+
+DOC_TOPIC_PRIOR = .50
+
+# topic_word_prior : float, optional (default=None)
+# Prior of topic word distribution beta. If the value is None,
+# defaults to 1 / n_components. In the literature, this is called eta.
+
+TOPIC_WORD_PRIOR = .50
+
 DOCUMENT_REFERENCE = 'all.txt'
 
 run = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
 TOPIC_DIRECTORY = 'topics-' + run
 
-CONFIG_FIELDS = 'BATCH_SIZE ITERATIONS MAX_DF MIN_DF N_TOP_WORDS N_TOPICS LEARNING_OFFSET DOCUMENT_REFERENCE'.split()
+CONFIG_FIELDS = 'BATCH_SIZE ITERATIONS MAX_DF MIN_DF N_TOP_WORDS N_TOPICS LEARNING_OFFSET DOCUMENT_REFERENCE DOC_TOPIC_PRIOR TOPIC_WORD_PRIOR'.split()
 CONFIG_FILE = 'config.json'
 
 config = {
@@ -123,11 +135,13 @@ if __name__ == '__main__':
     start = datetime.datetime.now()
     print('Start', start)
     lda = LatentDirichletAllocation(
-        n_components=N_TOPICS,
-        max_iter=ITERATIONS,
         batch_size=BATCH_SIZE,
+        doc_topic_prior=DOC_TOPIC_PRIOR,
         learning_method='online',
         learning_offset=LEARNING_OFFSET,
+        max_iter=ITERATIONS,
+        n_components=N_TOPICS,
+        topic_word_prior=TOPIC_WORD_PRIOR,
         verbose=1
     )
     # n_jobs=N_JOBS
