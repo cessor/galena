@@ -21,13 +21,13 @@ LEARNING_OFFSET = 3.
 # Prior of document topic distribution theta. If the value is None,
  # defaults to 1 / n_components. In the literature, this is called alpha.
 
-DOC_TOPIC_PRIOR = .50
+DOC_TOPIC_PRIOR = .15
 
 # topic_word_prior : float, optional (default=None)
 # Prior of topic word distribution beta. If the value is None,
 # defaults to 1 / n_components. In the literature, this is called eta.
 
-TOPIC_WORD_PRIOR = .50
+TOPIC_WORD_PRIOR = .01
 
 DOCUMENT_REFERENCE = 'all.txt'
 
@@ -58,7 +58,7 @@ def documents(path):
     with open(path, 'r') as file:
         for line in file:
             yield line.strip()
-load_all_documents = documents
+
 
 def load(path):
     if not path:
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     start = datetime.datetime.now()
     init_ts = datetime.datetime.now()
 
-    documents = list(load_all_documents(DOCUMENT_REFERENCE))
+    documents = [load(document) for document in documents(DOCUMENT_REFERENCE)]
 
     print(len(documents), 'documents loaded')
     end = datetime.datetime.now()
