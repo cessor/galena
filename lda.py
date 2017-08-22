@@ -1,7 +1,7 @@
 import os
 import datetime
 import json
-from documents import documents as load_all_documents
+#from documents import documents as load_all_documents
 
 # Should set this to 16. Otherwise use
 # Number of Jobs appears to be a problem.
@@ -10,11 +10,11 @@ from documents import documents as load_all_documents
 # N_JOBS = multiprocessing.cpu_count() * 2
 
 BATCH_SIZE = 128
-ITERATIONS = 50
-MAX_DF = .75
-MIN_DF = .25
+ITERATIONS = 1000
+MAX_DF = .95
+MIN_DF = .05
 N_TOP_WORDS = 10
-N_TOPICS = 20
+N_TOPICS = 40
 LEARNING_OFFSET = 3.
 
 # doc_topic_prior : float, optional (default=None)
@@ -54,11 +54,11 @@ def prepare_document(document):
     return document.replace('\n', ' ')
 
 
-def documents():
-    with open(DOCUMENT_REFERENCE, 'r') as file:
+def documents(path):
+    with open(path, 'r') as file:
         for line in file:
             yield line.strip()
-
+load_all_documents = documents
 
 def load(path):
     if not path:
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     start = datetime.datetime.now()
     init_ts = datetime.datetime.now()
 
-    documents = load_all_documents(DOCUMENT_REFERENCE)
+    documents = list(load_all_documents(DOCUMENT_REFERENCE))
 
     print(len(documents), 'documents loaded')
     end = datetime.datetime.now()

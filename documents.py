@@ -30,18 +30,19 @@ def _load(path):
         return content
 
 
-def documents(document_list_path):
-    '''Loads documents all documents in the list into memory
-    Args:
-        document_list_path: A file containing one txt document path per line.
-    '''
-    import multiprocessing
-    n_processes = multiprocessing.cpu_count() // 2 - 1
-    with multiprocessing.Pool(processes=n_processes) as pool:
-        tokens = pool.imap_unordered(tokenize, _documents(document_list_path))
-        return list(tokens)
+# def documents(document_list_path):
+#     '''Loads documents all documents in the list into memory
+#     Args:
+#         document_list_path: A file containing one txt document path per line.
+#     '''
+#     import multiprocessing
+#     n_processes = multiprocessing.cpu_count() // 2 - 1
+#     with multiprocessing.Pool(processes=n_processes) as pool:
+#         tokens = pool.imap_unordered(tokenize, _documents(document_list_path))
+#         return list(tokens)
 
-
+def documents(path):
+    list(map(tokenize, _documents('documents.txt')))
 
 def tokenize(path):
     content = _load(path)
