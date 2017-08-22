@@ -10,11 +10,11 @@ import json
 # N_JOBS = multiprocessing.cpu_count() * 2
 
 BATCH_SIZE = 128
-ITERATIONS = 128
-MAX_DF = .90
-MIN_DF = .10
+ITERATIONS = 256
+MAX_DF = .95
+MIN_DF = .05
 N_TOP_WORDS = 10
-N_TOPICS = 40
+N_TOPICS = 50
 LEARNING_OFFSET = 10.
 
 # 0.8 & 0.8 is kind of what I want....
@@ -23,13 +23,13 @@ LEARNING_OFFSET = 10.
 # Prior of document topic distribution theta. If the value is None,
 # defaults to 1 / n_components. In the literature, this is called alpha.
 
-DOC_TOPIC_PRIOR = .8
+DOC_TOPIC_PRIOR = .6
 
 # topic_word_prior : float, optional (default=None)
 # Prior of topic word distribution beta. If the value is None,
 # defaults to 1 / n_components. In the literature, this is called eta.
 
-TOPIC_WORD_PRIOR = .6
+TOPIC_WORD_PRIOR = .25
 
 DOCUMENT_REFERENCE = 'documents.txt'
 
