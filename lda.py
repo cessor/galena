@@ -10,12 +10,12 @@ import json
 # N_JOBS = multiprocessing.cpu_count() * 2
 
 BATCH_SIZE = 128
-ITERATIONS = 256
+ITERATIONS = 1024
 MAX_DF = .95
 MIN_DF = .05
 N_TOP_WORDS = 10
-N_TOPICS = 50
-LEARNING_OFFSET = 10.
+N_TOPICS = 20
+LEARNING_OFFSET = 50.
 
 # 0.8 & 0.8 is kind of what I want....
 
@@ -23,13 +23,13 @@ LEARNING_OFFSET = 10.
 # Prior of document topic distribution theta. If the value is None,
 # defaults to 1 / n_components. In the literature, this is called alpha.
 
-DOC_TOPIC_PRIOR = .6
+DOC_TOPIC_PRIOR = .3
 
 # topic_word_prior : float, optional (default=None)
 # Prior of topic word distribution beta. If the value is None,
 # defaults to 1 / n_components. In the literature, this is called eta.
 
-TOPIC_WORD_PRIOR = .25
+TOPIC_WORD_PRIOR = .5
 
 DOCUMENT_REFERENCE = 'documents.txt'
 
@@ -126,6 +126,10 @@ if __name__ == '__main__':
     start = datetime.datetime.now()
     tfidf_vectorizer = TfidfVectorizer(min_df=MIN_DF,
                                        max_df=MAX_DF,
+                                       ngram_range=(1,2),
+                                       norm='l1',
+                                       use_idf=True,
+                                       smooth_idf=True,
                                        lowercase=True,
                                        strip_accents='unicode',
                                        stop_words='english')
