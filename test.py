@@ -1,6 +1,7 @@
 from nose.tools import *
 from kazookid import Substitute
 
+from lda import *
 from corpus import *
 from prepare import *
 
@@ -145,7 +146,6 @@ def test_holdout():
     assert_equal(holdout.holdout(), [9])
 
 
-from lda import *
 def test_lda():
 
     class Document(object):
@@ -166,12 +166,12 @@ def test_lda():
     ])
 
     matrix = DocumentTermMatrix(
-        [document.content() for document in corpus.documents()],
+        corpus.documents(),
         CountVectorizer(max_df=0.90, min_df=.05)
     )
 
-    m2 = DocumentTermMatrix(
-        [document.content() for document in corpus.documents()],
+    pseudo_holdout = DocumentTermMatrix(
+        corpus.documents(),
         CountVectorizer(max_df=0.90, min_df=.05)
     )
 
@@ -182,11 +182,4 @@ def test_lda():
     )
 
     topics = lda.topics()
-    topics.perplexity(m2)
-
-
-    #print(l.get_params(deep=True))
-    #print(l.perplexity(m2.matrix()))
-
-    #get_params(deep=True)[source]
-    # --> Config Model, Topics, Perplexity, Matrix
+    topics.perplexity(pseudo_.matrix())

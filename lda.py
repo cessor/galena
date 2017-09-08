@@ -12,7 +12,7 @@ LDA_LEARNING_METHOD = 'online'
 LEARNING_OFFSET = 50.
 NGRAM_RANGE = (1, 2),
 STRIP_ACCENTS = 'ascii'
-VERBOSE = 0
+VERBOSE = 1
 
 
 class TfidfVectorizerConfig(object):
@@ -73,7 +73,8 @@ class DocumentTermMatrix(object):
         self._vectorizer = vectorizer
 
     def matrix(self):
-        return self._vectorizer.fit_transform(self._documents)
+        contents = [document.content() for document in self._documents]
+        return self._vectorizer.fit_transform(contents)
 
     def term(self, index):
         return self._vectorizer.get_feature_names()[index]
@@ -102,7 +103,7 @@ class Topics(object):
         return self._lda.get_params()
 
     def perplexity(self, matrix):
-        return self._lda.preplexity(matrix)
+        return self._lda.perplexity(matrix)
 
     def __iter__(self):
         for topic in self._lda.components_:

@@ -1,4 +1,5 @@
 import os
+import random
 
 # Todo: Stemming
 # Stem document
