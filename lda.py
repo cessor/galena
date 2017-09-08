@@ -92,10 +92,14 @@ class LatentDirichletAllocationModel(object):
 
 
 class Topics(object):
+
     def __init__(self, lda, model, matrix):
         self._lda = lda
         self._model = model
         self._matrix = matrix
+
+    def parameters(self):
+        return self._lda.get_params()
 
     def perplexity(self, matrix):
         return self._lda.preplexity(matrix)
@@ -106,6 +110,7 @@ class Topics(object):
 
 
 class Topic(object):
+
     def __init__(self, topic, matrix):
         self._topic = topic
         self._matrix = matrix

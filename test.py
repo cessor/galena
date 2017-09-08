@@ -181,13 +181,11 @@ def test_lda():
         config
     )
 
-    for topic in lda.topics():
-        print(topic.sum())
+    topics = lda.topics()
+    topics.perplexity(m2)
 
-        print(list(topic.terms()))
+
     #print(l.get_params(deep=True))
-
-
     #print(l.perplexity(m2.matrix()))
 
     #get_params(deep=True)[source]
