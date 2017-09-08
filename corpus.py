@@ -1,12 +1,8 @@
 import os
 
-# def ensure_string(term):
-#     if type(term) is bytes:
-#         return bytes.decode(term, 'utf-8')
-#     try:
-#         return str(term)
-#     except:
-#         return '<unreadable term>'
+# Todo: Stemming
+# Stem document
+# docs <- tm_map(docs,stemDocument)
 
 
 class Directory(object):
@@ -24,13 +20,10 @@ class File(object):
 
     def __init__(self, path):
         self._path = path
-        self._content = None
 
     def content(self):
-        if not self._content:
-            with open(self._path, 'r') as file:
-                self._content = file.read()
-        return self._content
+        with open(self._path, 'r') as file:
+            return file.read()
 
     def __str__(self):
         return self._path
@@ -44,7 +37,6 @@ class Prepared(object):
     def __init__(self, file, preparations):
         self._file = file
         self._preparations = preparations
-        self._content = None
 
     def _prepare(self, file):
         content = file.content()
@@ -53,12 +45,11 @@ class Prepared(object):
         return content
 
     def content(self):
-        if not self._content:
-            self._content = self._prepare(self._file)
-        return self._content
+        return self._prepare(self._file)
 
 
 class Lexicon(object):
+
     def __init__(self, words):
         self._words = words
 
@@ -68,18 +59,17 @@ class Lexicon(object):
 
 
 class Words(object):
+
     def __init__(self, file):
         self._file = file
-        self._words = None
 
     def __iter__(self):
-        if not self._words:
-            self._words = [word.lower().strip()
-                           for word in self._file.content().split('\n')]
-        return self._words.__iter__()
+        return [word.lower().strip()
+                for word in self._file.content().split('\n')].__iter__()
 
 
 class NltkStopwords(object):
+
     def __iter__(self):
         from nltk.corpus import stopwords
         return stopwords.words('english').__iter__()
@@ -104,7 +94,47 @@ class Corpus(object):
         self._documents = []
 
     def documents(self):
-        if not self._documents:
-            self._documents = [Prepared(file, self._preparations)
-                               for file in self._files]
-        return self._documents
+        return [Prepared(file, self._preparations)
+                for file in self._files]
+
+
+class Percent(object):
+
+    def __init__(self, percent):
+        self._percent = percent
+
+    def __mul__(self, other):
+        return other * self._percent / 100
+
+
+class Shuffled(object):
+
+    def __init__(self, corpus):
+        self._corpus = corpus
+
+    def documents(self):
+        documents = self._corpus.documents()
+        random.shuffle(documents)
+        return documents
+
+
+class Holdout(object):
+
+    def __init__(self, corpus, percent):
+        self._corpus = corpus
+        self._percent = percent
+
+    def _corpus_size(self):
+        return len(self._corpus.documents())
+
+    def _holdout_size(self):
+        return int(self._percent * self._corpus_size())
+
+    def _keep(self):
+        return self._corpus_size() - self._holdout_size()
+
+    def documents(self):
+        return self._corpus.documents()[:self._keep()]
+
+    def holdout(self):
+        return self._corpus.documents()[self._keep():]

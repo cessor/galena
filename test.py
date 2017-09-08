@@ -111,7 +111,7 @@ def test_stopwords():
     assert_equal(list_, ['a', 'b', 'c', 'd', 'e', 'f'])
 
 
-def test_remove_character_fragments():
+def _test_remove_character_fragments():
     from corpus import File, Prepared, Stopwords
 
     stopwords = Stopwords(
@@ -128,14 +128,67 @@ def test_remove_character_fragments():
         str.lower,
         remove_character_fragments,
         remove_spaces,
-        stopwords.remove,
+        stopwords.remove
     ]
 
-    #prepared = Prepared(File('corpus_oo/00003969.txt'), preparations)
-    #print(sorted(prepared.content().split()))#
+    corpus = Corpus(Directory('corpus_oo'), preparations)
+    print(corpus.documents()[0].content())
 
-    c = Corpus(Directory('corpus_oo'), preparations)
-    d = c.documents()[10]
-    print(d._file._path)
-    print(' '.join(d.content().split()[:100]))
 
+def test_holdout():
+    corpus = Substitute()
+    corpus.documents.returns([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+    holdout = Holdout(corpus, Percent(10))
+
+    assert_equal(holdout.documents(), [0, 1, 2, 3, 4, 5, 6, 7, 8])
+    assert_equal(holdout.holdout(), [9])
+
+
+from lda import *
+def test_lda():
+
+    class Document(object):
+        def __init__(self, content):
+            self._content = content
+
+        def content(self):
+            return self._content
+
+    corpus = Substitute()
+    corpus.documents.returns([
+        Document('aa aa aa aa tt'),
+        Document('bb bb aa aa ff'),
+        Document('aa aa aa cc tt'),
+        Document('cc cc cc bb tt'),
+        Document('aa bb aa bb tt'),
+        Document('cc cc cc aa tt'),
+    ])
+
+    matrix = DocumentTermMatrix(
+        [document.content() for document in corpus.documents()],
+        CountVectorizer(max_df=0.90, min_df=.05)
+    )
+
+    m2 = DocumentTermMatrix(
+        [document.content() for document in corpus.documents()],
+        CountVectorizer(max_df=0.90, min_df=.05)
+    )
+
+    config = LDAConfig(alpha=0.5, eta=0.1, n_topics=5)
+    lda = LatentDirichletAllocationModel(
+        matrix,
+        config
+    )
+
+    for topic in lda.topics():
+        print(topic.sum())
+
+        print(list(topic.terms()))
+    #print(l.get_params(deep=True))
+
+
+    #print(l.perplexity(m2.matrix()))
+
+    #get_params(deep=True)[source]
+    # --> Config Model, Topics, Perplexity, Matrix

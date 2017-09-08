@@ -22,7 +22,7 @@ if __name__ == '__main__':
     print('Elapsed', end - start)
 
 
-    tfidf_matrix = tfidf_vectorizer.fit_transform(documents)
+    tfidf_matrix = tfidf_vectorizer
     end = datetime.datetime.now()
     print('Elapsed', end - start)
 
@@ -41,3 +41,16 @@ if __name__ == '__main__':
 
     end_ts = datetime.datetime.now()
     print('Elapse', end_ts - init_ts)
+
+
+# print('LDA')
+# start = datetime.datetime.now()
+# print('Start', start)
+
+
+#     # start = datetime.datetime.now()
+# t0 = time()
+# tf = tf_vectorizer.fit_transform(data_samples)
+# print("done in %0.3fs." % (time() - t0))
+# print()
+
