@@ -7,10 +7,10 @@ MAX_DF = .90
 MIN_DF = .05
 
 BATCH_SIZE = 2048
-ITERATIONS = 512
+ITERATIONS = 10 #768
 LDA_LEARNING_METHOD = 'online'
 LEARNING_OFFSET = 50.
-NGRAM_RANGE = (1, 2),
+NGRAM_RANGE = (1, 2)
 STRIP_ACCENTS = 'ascii'
 VERBOSE = 1
 
@@ -45,6 +45,13 @@ class CountVectorizerConfig(object):
             ngram_range=NGRAM_RANGE,
         )
 
+    def test(self):
+        return dict(
+            max_df=100.0,
+            min_df=0.0,
+            strip_accents=STRIP_ACCENTS,
+        )
+
 
 class LDAConfig(object):
 
@@ -66,18 +73,29 @@ class LDAConfig(object):
         )
 
 
+class Contents(object):
+    def __init__(self, documents):
+        self._documents = documents
+
+    def __iter__(self):
+        for document in self._documents:
+            yield document.content()
+
+
 class DocumentTermMatrix(object):
 
-    def __init__(self, documents, vectorizer):
-        self._documents = documents
+    def __init__(self, contents, vectorizer):
+        self._contents = contents
         self._vectorizer = vectorizer
 
     def matrix(self):
-        contents = [document.content() for document in self._documents]
-        return self._vectorizer.fit_transform(contents)
+        return self._vectorizer.fit_transform(self._contents)
 
     def term(self, index):
         return self._vectorizer.get_feature_names()[index]
+
+    def transform(self, contents):
+        return self._vectorizer.transform(list(contents))
 
 
 class LatentDirichletAllocationModel(object):
@@ -108,6 +126,10 @@ class Topics(object):
     def __iter__(self):
         for topic in self._lda.components_:
             yield Topic(topic, self._matrix)
+
+    def save(self):
+        for topic in self:
+            print(topic)
 
 
 class Topic(object):

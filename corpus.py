@@ -87,6 +87,14 @@ class Stopwords(object):
                          if word not in self._stopwords])
 
 
+class Limited(object):
+    def __init__(self, corpus):
+        self._corpus = corpus
+
+    def documents(self):
+        return self._corpus.documents()[:20]
+
+
 class Corpus(object):
 
     def __init__(self, files, preparations):

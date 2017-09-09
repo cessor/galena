@@ -182,4 +182,4 @@ def test_lda():
     )
 
     topics = lda.topics()
-    topics.perplexity(pseudo_.matrix())
+    topics.perplexity(pseudo_holdout.matrix())
