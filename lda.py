@@ -7,7 +7,7 @@ MAX_DF = .90
 MIN_DF = .05
 
 BATCH_SIZE = 2048
-ITERATIONS = 10 #768
+ITERATIONS = 768
 LDA_LEARNING_METHOD = 'online'
 LEARNING_OFFSET = 50.
 NGRAM_RANGE = (1, 2)
@@ -126,10 +126,6 @@ class Topics(object):
     def __iter__(self):
         for topic in self._lda.components_:
             yield Topic(topic, self._matrix)
-
-    def save(self):
-        for topic in self:
-            print(topic)
 
 
 class Topic(object):

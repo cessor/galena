@@ -1,6 +1,7 @@
 import os
 import datetime
 import json
+import datetime
 #from documents import documents as load_all_documents
 
 # Should set this to 16. Otherwise use
@@ -10,76 +11,15 @@ import json
 # N_JOBS = multiprocessing.cpu_count() * 2
 
 
-class LdaData(object):
+def save(i, topics, perplexity, start):
+    params = topics.parameters()
+    params['perplexity'] = perplexity
+    params['start'] = start
+    params['end'] = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
 
-    def __init__(self):
-        stopwords = Stopwords(
-            Lexicon(
-                [Words(file) for file in Directory('stopwords')]
-                + [NltkStopwords()]
-            )
-        )
-
-        preparations = [
-            text,
-            remove_new_lines,
-            remove_dashes,
-            str.lower,
-            remove_character_fragments,
-            remove_spaces,
-            stopwords.remove
-        ]
-
-        self._holdout = Holdout(
-            Shuffled(Limited(Corpus(Directory('corpus_oo'), preparations))),
-            Percent(10)
-        )
-
-    def training_matrix(self):
-        # This returns a proper object, on which you must call
-        # .matrix() when passing it to LDA
-        count_vectorizer_config = CountVectorizerConfig(min_df=0.1, max_df=0.9)
-        self._document_term_matrix = DocumentTermMatrix(
-            Contents(self._holdout.documents()),
-            CountVectorizer(**count_vectorizer_config.test())
-        )
-        return self._document_term_matrix
-
-    def validation_matrix(self):
-        # This returns a raw, transformed object. Do not call .matrix()
-        # when passing this to perplexity
-        #
-        # This is not what I want. LDA manipulates the actual matrix
-        # So I don't see a way how to quickly make this into an
-        # Immutable thing. - JH, 09.09.2017
-        return self._document_term_matrix.transform(
-            Contents(self._holdout.holdout())
-        )
-
-
-class LdaTask(object):
-
-    def __init__(self, document_term_matrix):
-        self._document_term_matrix = document_term_matrix
-
-    def run(self, lda_config):
-        lda = LatentDirichletAllocationModel(
-            self._document_term_matrix,
-            lda_config
-        )
-        return lda.topics()
-
-
-class Configurations():
-
-    def __init__(self):
-        self._n_topics = 120
-
-    def __iter__(self):
-        alphas = map(lambda v: float(v) / 100, range(0, 100, 5))
-        configs = [LDAConfig(alpha=alpha, eta=0.5, n_topics=self._n_topics)
-                   for alpha in alphas]
-        return configs.__iter__()
+    filename = 'run-%s.txt' % i
+    with open(filename, 'w') as f:
+        f.write(json.dumps(params, indent=2))
 
 
 if __name__ == '__main__':
@@ -88,25 +28,65 @@ if __name__ == '__main__':
     from prepare import *
     from lda import *
 
-    lda_data = LdaData()
+    stopwords = Stopwords(
+        Lexicon(
+              [Words(file) for file in Directory('stopwords')]
+            + [NltkStopwords()]
+        )
+    )
 
-    config = list(Configurations())[0]
-    task = LdaTask(lda_data.training_matrix())
-    topics = task.run(config)
+    preparations = [
+        text,
+        remove_new_lines,
+        remove_dashes,
+        str.lower,
+        remove_character_fragments,
+        remove_spaces,
+        stopwords.remove
+    ]
 
-    #perplexity = topics.perplexity(lda_data.validation_matrix())
 
-    #print(perplexity)
+    holdout = Holdout(
+        Shuffled(Corpus(Directory('corpus_oo'), preparations)),
+        Percent(10)
+    )
 
+    count_vectorizer_config = CountVectorizerConfig(min_df=0.1, max_df=0.9)
+    document_term_matrix = DocumentTermMatrix(
+        Contents(holdout.documents()),
+        CountVectorizer(**count_vectorizer_config.config())
+    )
 
-    # with multiprocessing.Pool(15):
-    # for result in multiprocessing.imap_unordered(run_lda, Configurations()):
+    # This could run in parallel
+    # Exclude 0.0, beacuase it produces errors
+    alphas = list(map(lambda v: float(v) / 100, range(0, 100, 5)))[1:]
+    N_TOPICS = 120
+
+    for i, alpha in enumerate(alphas):
+        start = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
+        config = LDAConfig(alpha=alpha, eta=0.5, n_topics=N_TOPICS)
+
+        lda = LatentDirichletAllocationModel(
+            document_term_matrix,
+            config
+        )
+
+        topics = lda.topics()
+
+        validation_terms = document_term_matrix.transform(
+            Contents(holdout.holdout())
+        )
+
+        perplexity = topics.perplexity(validation_terms)
+
+        save(i, topics, perplexity, start)
 
 
 
     # import datetime
     # start = datetime.datetime.now()
     # init_ts = datetime.datetime.now()
+
 
     # #print(l.get_params(deep=True))
     # #print(l.perplexity(m2.matrix()))
@@ -118,9 +98,11 @@ if __name__ == '__main__':
     # end = datetime.datetime.now()
     # print('Elapsed', end - start)
 
+
     # tfidf_matrix = tfidf_vectorizer
     # end = datetime.datetime.now()
     # print('Elapsed', end - start)
+
 
     # # n_jobs=N_JOBS
 
@@ -148,3 +130,4 @@ if __name__ == '__main__':
 # tf = tf_vectorizer.fit_transform(data_samples)
 # print("done in %0.3fs." % (time() - t0))
 # print()
+
