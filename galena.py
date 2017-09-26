@@ -11,15 +11,31 @@ import datetime
 # N_JOBS = multiprocessing.cpu_count() * 2
 
 
-def save(i, topics, perplexity, start):
+
+def save(i, topics, perplexity, start, end):
     params = topics.parameters()
     params['perplexity'] = perplexity
-    params['start'] = start
-    params['end'] = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
+    params['start'] = str(start)
+    params['end'] = str(end)
 
     filename = 'run-%s.txt' % i
     with open(filename, 'w') as f:
         f.write(json.dumps(params, indent=2))
+
+
+class AlphaSteps(object):
+    def __init__(self, start, end, step, precision=2):
+        self._start = start
+        self._end = end
+        self._step = step
+        self._precision = precision
+
+    def __iter__(self):
+        # Exclude 0.0, because it produces errors
+        value = self._start
+        while value < self._end + self._step:
+            yield round(value, self._precision)
+            value += self._step
 
 
 if __name__ == '__main__':
@@ -45,9 +61,8 @@ if __name__ == '__main__':
         stopwords.remove
     ]
 
-
     holdout = Holdout(
-        Shuffled(Corpus(Directory('corpus_oo'), preparations)),
+        Fixed(Shuffled(Corpus(Directory('corpus_oo'), preparations))),
         Percent(10)
     )
 
@@ -57,14 +72,14 @@ if __name__ == '__main__':
         CountVectorizer(**count_vectorizer_config.config())
     )
 
-    # This could run in parallel
-    # Exclude 0.0, beacuase it produces errors
-    alphas = list(map(lambda v: float(v) / 100, range(0, 100, 5)))[1:]
     N_TOPICS = 120
-
+    alphas = AlphaSteps(0.05, 1.0, 0.05)
     for i, alpha in enumerate(alphas):
-        start = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
-        config = LDAConfig(alpha=alpha, eta=0.5, n_topics=N_TOPICS)
+        start = Moment.now()
+
+        # Before, eta was fixed at 0.5
+        eta = 1 / N_TOPICS
+        config = LDAConfig(alpha=alpha, eta=eta, n_topics=N_TOPICS)
 
         lda = LatentDirichletAllocationModel(
             document_term_matrix,
@@ -79,7 +94,8 @@ if __name__ == '__main__':
 
         perplexity = topics.perplexity(validation_terms)
 
-        save(i, topics, perplexity, start)
+        end = Moment.now()
+        save(i, topics, perplexity, start, end)
 
 
 

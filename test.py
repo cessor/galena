@@ -146,7 +146,7 @@ def test_holdout():
     assert_equal(holdout.holdout(), [9])
 
 
-def test_lda():
+def _test_lda():
 
     class Document(object):
         def __init__(self, content):

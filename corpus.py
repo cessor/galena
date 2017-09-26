@@ -1,9 +1,22 @@
 import os
+import json
 import random
 
 # Todo: Stemming
 # Stem document
 # docs <- tm_map(docs,stemDocument)
+
+
+class Filter(object):
+
+    def __init__(self, directory, pattern):
+        self._directory = directory
+        self._pattern = pattern
+
+    def __iter__(self):
+        for file in self._directory:
+            if file.path().endswith(self._pattern):
+                yield file
 
 
 class Directory(object):
@@ -22,15 +35,30 @@ class File(object):
     def __init__(self, path):
         self._path = path
 
+    def path(self):
+        return self._path
+
     def content(self):
         with open(self._path, 'r') as file:
             return file.read()
 
     def __str__(self):
-        return self._path
+        return self.path()
 
     def __repr__(self):
         return '<File: %s>' % self.__str__()
+
+
+class Json(object):
+
+    def __init__(self, file):
+        self._file = file
+
+    def dict(self):
+        return json.loads(self._file.content())
+
+    def __getattr__(self, name):
+        return self.dict()[name]
 
 
 class Prepared(object):
@@ -88,6 +116,7 @@ class Stopwords(object):
 
 
 class Limited(object):
+
     def __init__(self, corpus):
         self._corpus = corpus
 
@@ -125,6 +154,17 @@ class Shuffled(object):
         documents = self._corpus.documents()
         random.shuffle(documents)
         return documents
+
+
+class Fixed(object):
+    def __init__(self, corpus):
+        self._corpus = corpus
+        self._documents = None
+
+    def documents(self):
+        if not self._documents:
+            self._documents = self._corpus.documents()
+        return self._documents
 
 
 class Holdout(object):
