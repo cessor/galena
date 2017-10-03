@@ -3,6 +3,7 @@ from kazookid import Substitute
 
 from corpus import *
 
+
 def test_shuffle():
     '''Shuffle Returns an Unordered List'''
     corpus = Substitute()
@@ -16,11 +17,3 @@ def test_holdout():
     corpus.documents.returns([1, 2, 3, 4])
     holdout = Holdout(Fixed(Shuffled(corpus)), Percent(25))
     assert_equal(holdout.documents(), holdout.documents())
-
-
-def test_alphas():
-    '''Alphas run with inclusive bounds.'''
-    from galena import AlphaSteps
-    alphas = list(AlphaSteps(start=0.05, end=1.0, step=0.05))
-    assert_equal(alphas[0], 0.05)
-    assert_equal(alphas[-1], 1.0)
