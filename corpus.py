@@ -25,6 +25,18 @@ class Directory(object):
         self._path = path
 
     def __iter__(self):
+        yield from (
+            File(file.path) for file in os.scandir(self._path)
+            if file.is_file()
+        )
+
+
+class DirectoryTree(object):
+
+    def __init__(self, path):
+        self._path = path
+
+    def __iter__(self):
         for root, dirs, files in os.walk(self._path):
             for file in files:
                 yield File(os.path.join(root, file))
