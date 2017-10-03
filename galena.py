@@ -2,6 +2,12 @@ import os
 import datetime
 import json
 import datetime
+from moment import Moment
+from multiprocessing import Pool
+from corpus import *
+from prepare import *
+from lda import *
+
 #from documents import documents as load_all_documents
 
 # Should set this to 16. Otherwise use
@@ -12,8 +18,7 @@ import datetime
 
 
 
-def save(i, topics, perplexity, start, end):
-    params = topics.parameters()
+def save(i, params, perplexity, start, end):
     params['perplexity'] = perplexity
     params['start'] = str(start)
     params['end'] = str(end)
@@ -23,8 +28,8 @@ def save(i, topics, perplexity, start, end):
         f.write(json.dumps(params, indent=2))
 
 
-class AlphaSteps(object):
-    def __init__(self, start, end, step, precision=2):
+class FloatRange(object):
+    def __init__(self, start, end, step, precision=4):
         self._start = start
         self._end = end
         self._step = step
@@ -38,11 +43,39 @@ class AlphaSteps(object):
             value += self._step
 
 
-if __name__ == '__main__':
+def make_run(run):
+    i, eta, documents, holdout = run
+    start = Moment.now()
 
-    from corpus import *
-    from prepare import *
-    from lda import *
+    count_vectorizer_config = CountVectorizerConfig(min_df=0.1, max_df=0.9)
+    document_term_matrix = DocumentTermMatrix(
+        Contents(documents),
+        CountVectorizer(**count_vectorizer_config.config())
+    )
+
+    # Before, eta was fixed at 0.5
+    ALPHA = 0.365
+    N_TOPICS = 120
+    #eta = 1 / N_TOPICS
+    config = LDAConfig(alpha=ALPHA, eta=eta, n_topics=N_TOPICS)
+
+    lda = LatentDirichletAllocationModel(
+        document_term_matrix,
+        config
+    )
+
+    topics = lda.topics()
+
+    validation_terms = document_term_matrix.transform(
+        Contents(holdout)
+    )
+
+    perplexity = topics.perplexity(validation_terms)
+
+    end = Moment.now()
+    return (i, topics.parameters(), perplexity, start, end)
+
+if __name__ == '__main__':
 
     stopwords = Stopwords(
         Lexicon(
@@ -66,38 +99,16 @@ if __name__ == '__main__':
         Percent(10)
     )
 
-    count_vectorizer_config = CountVectorizerConfig(min_df=0.1, max_df=0.9)
-    document_term_matrix = DocumentTermMatrix(
-        Contents(holdout.documents()),
-        CountVectorizer(**count_vectorizer_config.config())
-    )
 
-    N_TOPICS = 120
-    alphas = AlphaSteps(0.05, 1.0, 0.05)
-    for i, alpha in enumerate(alphas):
-        start = Moment.now()
+    etas = FloatRange(0.001, 1.0, 0.002)
 
-        # Before, eta was fixed at 0.5
-        eta = 1 / N_TOPICS
-        config = LDAConfig(alpha=alpha, eta=eta, n_topics=N_TOPICS)
+    runs = [(i, eta, holdout.documents(), holdout.holdout()) for i, eta in enumerate(etas)]
 
-        lda = LatentDirichletAllocationModel(
-            document_term_matrix,
-            config
-        )
-
-        topics = lda.topics()
-
-        validation_terms = document_term_matrix.transform(
-            Contents(holdout.holdout())
-        )
-
-        perplexity = topics.perplexity(validation_terms)
-
-        end = Moment.now()
-        save(i, topics, perplexity, start, end)
-
-
+    print('Running this shit')
+    with Pool(processes=16) as pool:
+        for result in pool.imap_unordered(make_run, runs):
+            save(*result)
+    print('Done running this shit')
 
     # import datetime
     # start = datetime.datetime.now()

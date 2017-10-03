@@ -5,9 +5,8 @@ from sklearn.decomposition import LatentDirichletAllocation
 
 MAX_DF = .90
 MIN_DF = .05
-
 BATCH_SIZE = 2048
-ITERATIONS = 100
+ITERATIONS = 50
 #ITERATIONS = 768
 LDA_LEARNING_METHOD = 'online'
 LEARNING_OFFSET = 50.
@@ -22,7 +21,7 @@ class TfidfVectorizerConfig(object):
         self._max_df = max_df
         self._min_df = min_df
 
-    def conifg(self):
+    def config(self):
         return dict(
             max_df=self._max_df,
             min_df=self._min_df,
@@ -70,7 +69,8 @@ class LDAConfig(object):
             learning_method=LDA_LEARNING_METHOD,
             learning_offset=LEARNING_OFFSET,
             max_iter=ITERATIONS,
-            verbose=VERBOSE
+            verbose=VERBOSE,
+            random_state=0
         )
 
 
