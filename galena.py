@@ -93,8 +93,7 @@ if __name__ == '__main__':
 
     stopwords = Stopwords(
         Lexicon(
-              [Words(file) for file in Directory('stopwords')]
-            + [NltkStopwords()]
+
         )
     )
 
