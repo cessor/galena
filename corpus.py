@@ -116,15 +116,7 @@ class NltkStopwords(object):
         return stopwords.words('english').__iter__()
 
 
-class Stopwords(object):
 
-    def __init__(self, stopwords):
-        self._stopwords = list(stopwords)
-
-    def remove(self, text):
-        text = text.split()
-        return ' '.join([word for word in text
-                         if word not in self._stopwords])
 
 
 class Limited(object):

@@ -2,6 +2,10 @@ import os
 import datetime
 import json
 import datetime
+import itertools
+
+import numpy as np
+
 from moment import Moment
 from multiprocessing import Pool
 from corpus import *
@@ -44,28 +48,37 @@ class FloatRange(object):
 
 
 def make_run(run):
-    i, alpha, documents, holdout = run
+    i, alpha, eta, documents, holdout, n_topics = run
     start = Moment.now()
 
-    count_vectorizer_config = CountVectorizerConfig(min_df=0.1, max_df=0.9)
+    # Improvement:
+    # The Holdout --> Corpus
+    # Corpus --> Documents (Iterable)
+    # Corpus -> documents() returns Contents
+    # Corpus -> holdout() returns Contents
+
+
     document_term_matrix = DocumentTermMatrix(
         Contents(documents),
-        CountVectorizer(**count_vectorizer_config.config())
+        CountVectorizer(
+            **CountVectorizerConfig(min_df=0.1, max_df=0.9).config()
+        )
     )
 
     # Before, eta was fixed at 0.5
     #ALPHA = 0.365
-    N_TOPICS = 120
-    eta = 0.375
-    #eta = 1 / N_TOPICS
-    config = LDAConfig(alpha=alpha, eta=eta, n_topics=N_TOPICS)
+
 
     lda = LatentDirichletAllocationModel(
         document_term_matrix,
-        config
+        LDAConfig(alpha=alpha, eta=eta, n_topics=N_TOPICS)
     )
 
     topics = lda.topics()
+
+    # Improvement:
+    # Make it so that the document term matrix is contained within
+    # The LDA, so that the LDAModel cares about it.
 
     validation_terms = document_term_matrix.transform(
         Contents(holdout)
@@ -100,9 +113,17 @@ if __name__ == '__main__':
         Percent(10)
     )
 
-    alphas = list(FloatRange(0.000, 1.0, 0.01))[1:]
+    N_TOPICS = 120
+    alphas = np.linspace(0.001, 0.8, num=20)
+    etas = np.linspace(0.001, 0.8, num=20)
 
-    runs = [(i, alpha, holdout.documents(), holdout.holdout()) for i, alpha in enumerate(alphas)]
+    runs = []
+    for alpha in alphas:
+        for eta in etas:
+            runs.append((alpha, eta))
+
+    runs = [(i, alpha, eta, holdout.documents(), holdout.holdout(), N_TOPICS)
+         for i, (alpha, eta) in enumerate(runs)]
 
     print('Running this shit')
     with Pool(processes=16) as pool:
