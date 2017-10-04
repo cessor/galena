@@ -44,7 +44,7 @@ class FloatRange(object):
 
 
 def make_run(run):
-    i, eta, documents, holdout = run
+    i, alpha, documents, holdout = run
     start = Moment.now()
 
     count_vectorizer_config = CountVectorizerConfig(min_df=0.1, max_df=0.9)
@@ -54,10 +54,11 @@ def make_run(run):
     )
 
     # Before, eta was fixed at 0.5
-    ALPHA = 0.365
+    #ALPHA = 0.365
     N_TOPICS = 120
+    eta = 0.375
     #eta = 1 / N_TOPICS
-    config = LDAConfig(alpha=ALPHA, eta=eta, n_topics=N_TOPICS)
+    config = LDAConfig(alpha=alpha, eta=eta, n_topics=N_TOPICS)
 
     lda = LatentDirichletAllocationModel(
         document_term_matrix,
@@ -99,10 +100,9 @@ if __name__ == '__main__':
         Percent(10)
     )
 
+    alphas = list(FloatRange(0.000, 1.0, 0.01))[1:]
 
-    etas = FloatRange(0.001, 1.0, 0.002)
-
-    runs = [(i, eta, holdout.documents(), holdout.holdout()) for i, eta in enumerate(etas)]
+    runs = [(i, alpha, holdout.documents(), holdout.holdout()) for i, alpha in enumerate(alphas)]
 
     print('Running this shit')
     with Pool(processes=16) as pool:
