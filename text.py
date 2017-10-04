@@ -10,9 +10,9 @@ class Text(object):
         self._without = without
 
     def _clean(self):
-        string = self._string
+        string = str(self._string)
         for waste in self._without:
-            string = string.remove(waste)
+            string = waste.remove(string)
         return string
 
     def __iter__(self):
@@ -48,7 +48,7 @@ class String(object):
         self._string = string
 
     def __str__(self):
-        return self._string
+        return str(self._string)
 
     @classmethod
     def concatenate(cls, characters):
@@ -56,15 +56,6 @@ class String(object):
 
     def remove(self, waste):
         return String(waste.remove(self._string))
-
-    def split(self, char):
-        return self._string.split(char)
-
-    def lower(self):
-        return self._string.lower()
-
-    def strip(self):
-        return self._string.strip()
 
     def __iter__(self):
         yield from self._string
@@ -84,10 +75,11 @@ class AllowedCharacters(object):
 
 
 class Lower(String):
-    '''Returns lower case characters'''
+    pass
+    # '''Returns lower case characters'''
 
     def __str__(self):
-        return str(self._string.lower())
+        return str(self._string).lower()
 
     def __iter__(self):
         for c in self._string:
@@ -100,8 +92,3 @@ class Stripped(String):
 
     def __str__(self):
         return str(self._string.strip())
-
-    def __iter__(self):
-        for c in self._string:
-            yield c.lower()
-

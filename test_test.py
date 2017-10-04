@@ -7,11 +7,13 @@ class Document(object):
 
     def __init__(self, text, without):
         self._text = text
-        self._without = without
+        self._stopwords = without
 
     def _clean(self):
-        waste = self._without
-        return waste.remove(self._text)
+        #self._text
+        #waste = self._without
+        #return waste.remove([str(word) for word in self._text])
+        return list(self._stopwords.remove(self._text))
 
     def __str__(self):
         return str(self._clean())

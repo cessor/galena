@@ -9,6 +9,9 @@ class Stopwords(object):
 
     def remove(self, words):
         for word in words:
+            if not word:
+                continue
+
             if word not in self._stopwords:
                 yield word
 
