@@ -1,7 +1,7 @@
 import os
 import json
 import random
-from filesystem import *
+from .filesystem import *
 
 # Todo: Stemming
 # Stem document
@@ -37,7 +37,7 @@ class Corpus(object):
         self._documents = []
 
     def documents(self):
-        return [Prepared(file, self._preparations)
+        return [Document(file, self._preparations)
                 for file in self._files]
 
 

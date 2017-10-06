@@ -1,7 +1,7 @@
 from nose.tools import *
 from kazookid import Substitute
 
-from corpus import *
+from galena.corpus import *
 
 
 def test_shuffle():

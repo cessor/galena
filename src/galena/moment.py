@@ -1,7 +1,6 @@
 import datetime
 
 
-
 class Duration(object):
     SECOND = 1
     MINUTE = 60 * SECOND
@@ -26,7 +25,6 @@ class Duration(object):
 
     def __eq__(self, other):
         return self._seconds == other._seconds
-
 
 
 class Moment(object):

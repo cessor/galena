@@ -1,6 +1,7 @@
-from corpus import *
-from text import *
+from .corpus import *
+from .text import *
 import itertools
+
 
 class Stopwords(object):
 
@@ -17,6 +18,7 @@ class Stopwords(object):
 
 
 class Lexicon(object):
+
     def __init__(self, *iterables):
         self._iterables = list(itertools.chain(*iterables))
 
@@ -32,6 +34,7 @@ class NltkStopwords(object):
 
 
 class StopwordsFolder(object):
+
     def __init__(self, directory):
         self._directory = directory
 
@@ -41,4 +44,3 @@ class StopwordsFolder(object):
                 for word in Words(line):
                     if word:
                         yield word.strip().lower()
-

@@ -1,5 +1,5 @@
 from nose.tools import *
-from moment import *
+from galena.moment import *
 
 import datetime
 

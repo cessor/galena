@@ -1,6 +1,21 @@
 # encoding: utf-8
 import string
 
+class Document(object):
+
+    def __init__(self, text, without):
+        self._text = text
+        self._stopwords = without
+
+    def _clean(self):
+        return self._stopwords.remove(self._text)
+
+    def __str__(self):
+        return self.content()
+
+    def content(self):
+        return ' '.join(self._clean())
+
 
 class Text(object):
     '''Removes waste from a string'''
@@ -10,9 +25,9 @@ class Text(object):
         self._without = without
 
     def _clean(self):
-        string = str(self._string)
+        string = self._string
         for waste in self._without:
-            string = waste.remove(string)
+            string = waste.remove_from(string)
         return string
 
     def __iter__(self):
@@ -42,23 +57,11 @@ class Lines(object):
 
 
 class String(object):
-    '''Represents a string that can be cleaned'''
-
-    def __init__(self, string):
-        self._string = string
+    def __init__(self, characters):
+        self._characters = characters
 
     def __str__(self):
-        return str(self._string)
-
-    @classmethod
-    def concatenate(cls, characters):
-        return String(''.join(characters))
-
-    def remove(self, waste):
-        return String(waste.remove(self._string))
-
-    def __iter__(self):
-        yield from self._string
+        return ''.join(characters)
 
 
 class AllowedCharacters(object):
@@ -74,12 +77,10 @@ class AllowedCharacters(object):
                 yield c
 
 
-class Lower(String):
-    pass
-    # '''Returns lower case characters'''
+class Lower(object):
 
     def __str__(self):
-        return str(self._string).lower()
+        return self._string.lower()
 
     def __iter__(self):
         for c in self._string:
@@ -87,7 +88,7 @@ class Lower(String):
 
 
 
-class Stripped(String):
+class Stripped(object):
     '''Returns lower case characters'''
 
     def __str__(self):
