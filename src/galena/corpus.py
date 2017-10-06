@@ -2,6 +2,7 @@ import os
 import json
 import random
 from .filesystem import *
+from .document import Document
 
 # Todo: Stemming
 # Stem document
@@ -37,6 +38,7 @@ class Corpus(object):
         self._documents = []
 
     def documents(self):
+        raise NotImplementedError()
         return [Document(file, self._preparations)
                 for file in self._files]
 

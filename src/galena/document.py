@@ -8,7 +8,7 @@ class Document(object):
         self._stopwords = without
 
     def _clean(self):
-        return self._stopwords.remove(self._text)
+        return self._stopwords.remove_from(self._text)
 
     def __str__(self):
         return self.content()
@@ -25,7 +25,7 @@ class Text(object):
         self._without = without
 
     def _clean(self):
-        string = self._string
+        string = str(self._string).lower()
         for waste in self._without:
             string = waste.remove_from(string)
         return string
@@ -61,7 +61,7 @@ class String(object):
         self._characters = characters
 
     def __str__(self):
-        return ''.join(characters)
+        return ''.join(self._characters)
 
 
 class AllowedCharacters(object):
@@ -75,21 +75,3 @@ class AllowedCharacters(object):
         for c in self._string:
             if c in self.ALLOWED_CHARACTERS:
                 yield c
-
-
-class Lower(object):
-
-    def __str__(self):
-        return self._string.lower()
-
-    def __iter__(self):
-        for c in self._string:
-            yield c.lower()
-
-
-
-class Stripped(object):
-    '''Returns lower case characters'''
-
-    def __str__(self):
-        return str(self._string.strip())

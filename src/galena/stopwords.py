@@ -1,5 +1,5 @@
 from .corpus import *
-from .text import *
+from .document import *
 import itertools
 
 
@@ -8,7 +8,7 @@ class Stopwords(object):
     def __init__(self, stopwords):
         self._stopwords = stopwords
 
-    def remove(self, words):
+    def remove_from(self, words):
         for word in words:
             if not word:
                 continue

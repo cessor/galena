@@ -3,6 +3,18 @@ from kazookid import Substitute
 from galena.remove import *
 
 
+def test_remove_dashes():
+    text = ' - - --- --- -- '
+    result = Dashes().remove_from(text)
+    assert_equal(result, ' ' * len(text))
+
+
+def test_remove_newlines():
+    text = 'A\nB'
+    result = NewLines().remove_from(text)
+    assert_equal(result, 'A B')
+
+
 def test_remove_multiple_spaces():
     text = 'a  b c  d e  f'
     result = Gaps().remove_from(text)
