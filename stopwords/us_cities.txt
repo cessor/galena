@@ -1,0 +1,307 @@
+new york
+los angeles
+chicago
+houston
+phoenix
+philadelphia
+san antonio
+san diego
+dallas
+san jose
+austin
+jacksonville
+san francisco
+columbus
+indianapolis
+fort worth
+charlotte
+seattle
+denver
+el paso
+washington
+boston
+detroit
+nashville
+memphis
+portland
+oklahoma city
+las vegas
+louisville
+baltimore
+milwaukee
+albuquerque
+tucson
+fresno
+sacramento
+mesa
+kansas city
+atlanta
+long beach
+colorado springs
+raleigh
+miami
+virginia beach
+omaha
+oakland
+minneapolis
+tulsa
+arlington
+new orleans
+wichita
+cleveland
+tampa
+bakersfield
+aurora
+honolulu
+anaheim
+santa ana
+corpus christi
+riverside
+lexington
+st. louis
+stockton
+pittsburgh
+saint paul
+cincinnati
+anchorage
+henderson
+greensboro
+plano
+newark
+lincoln
+toledo
+orlando
+chula vista
+irvine
+fort wayne
+jersey city
+durham
+st. petersburg
+laredo
+buffalo
+madison
+lubbock
+chandler
+scottsdale
+glendale
+reno
+norfolk
+winston-salem
+north las vegas
+irving
+chesapeake
+gilbert
+hialeah
+garland
+fremont
+baton rouge
+richmond
+boise
+san bernardino
+spokane
+des moines
+modesto
+birmingham
+tacoma
+fontana
+rochester
+oxnard
+moreno valley
+fayetteville
+aurora
+glendale
+yonkers
+huntington beach
+montgomery
+amarillo
+little rock
+akron
+columbus
+augusta
+grand rapids
+shreveport
+salt lake city
+huntsville
+mobile
+tallahassee
+grand prairie
+overland park
+knoxville
+port st. lucie
+worcester
+brownsville
+tempe
+santa clarita
+newport news
+cape coral
+providence
+fort lauderdale
+chattanooga
+rancho cucamonga
+oceanside
+santa rosa
+garden grove
+vancouver
+sioux falls
+ontario
+mckinney
+elk grove
+jackson
+pembroke pines
+salem
+springfield
+corona
+eugene
+fort collins
+peoria
+frisco
+cary
+lancaster
+hayward
+palmdale
+salinas
+alexandria
+lakewood
+springfield
+pasadena
+sunnyvale
+macon
+pomona
+hollywood
+kansas city
+escondido
+clarksville
+joliet
+rockford
+torrance
+naperville
+paterson
+savannah
+bridgeport
+mesquite
+killeen
+syracuse
+mcallen
+pasadena
+bellevue
+fullerton
+orange
+dayton
+miramar
+thornton
+west valley city
+olathe
+hampton
+warren
+midland
+waco
+charleston
+columbia
+denton
+carrollton
+surprise
+roseville
+sterling heights
+murfreesboro
+gainesville
+cedar rapids
+visalia
+coral springs
+new haven
+stamford
+thousand oaks
+concord
+elizabeth
+lafayette
+kent
+topeka
+simi valley
+santa clara
+athens
+hartford
+victorville
+abilene
+norman
+vallejo
+berkeley
+round rock
+ann arbor
+fargo
+columbia
+allentown
+evansville
+beaumont
+odessa
+wilmington
+arvada
+independence
+provo
+lansing
+el monte
+springfield
+fairfield
+clearwater
+peoria
+rochester
+carlsbad
+westminster
+west jordan
+pearland
+richardson
+downey
+miami gardens
+temecula
+costa mesa
+college station
+elgin
+murrieta
+gresham
+high point
+antioch
+inglewood
+cambridge
+lowell
+manchester
+billings
+pueblo
+palm bay
+centennial
+richmond
+ventura
+pompano beach
+north charleston
+everett
+waterbury
+west palm beach
+boulder
+west covina
+broken arrow
+clovis
+daly city
+lakeland
+santa maria
+norwalk
+sandy springs
+hillsboro
+green bay
+tyler
+wichita falls
+lewisville
+burbank
+greeley
+san mateo
+el cajon
+jurupa valley
+rialto
+davenport
+league city
+edison
+davie
+las cruces
+south bend
+vista
+woodbridge
+renton
+lakewood
+san angelo
+clinton

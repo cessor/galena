@@ -1,10 +1,12 @@
 # Local LDA files
 .cached_files/
 .ipynb_checkpoints/
-cache.sqlite
 *topics*/
-*.txt
-
+./*.txt
+cache.sqlite
+corpus_oo/*
+documents.txt
+runs*/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

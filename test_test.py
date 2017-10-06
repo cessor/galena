@@ -10,13 +10,10 @@ class Document(object):
         self._stopwords = without
 
     def _clean(self):
-        #self._text
-        #waste = self._without
-        #return waste.remove([str(word) for word in self._text])
-        return list(self._stopwords.remove(self._text))
+        return self._stopwords.remove(self._text)
 
     def __str__(self):
-        return str(self._clean())
+        return ' '.join(self._clean())
 
     def content(self):
         return self.__str__()
@@ -24,24 +21,22 @@ class Document(object):
 
 from stopwords import *
 
-text = Text(
-    Lower(
-        String.concatenate(
-            AllowedCharacters(
-                File('corpus_oo/00006308.txt').content()
+doc = Document(
+    Text(
+        Lower(
+            String.concatenate(
+                AllowedCharacters(
+                    File('corpus_oo/00006308.txt').content()
+                )
             )
+        ),
+        without=(
+            NewLines(),
+            Dashes(),
+            Fragments(),
+            Gaps(),
         )
     ),
-    without=(
-        NewLines(),
-        Dashes(),
-        Fragments(),
-        Gaps(),
-    )
-)
-
-doc = Document(
-    text,
     without=Stopwords(
         Lexicon(
             NltkStopwords(),
