@@ -15,9 +15,6 @@ class Document(object):
     def __str__(self):
         return ' '.join(self._clean())
 
-    def content(self):
-        return self.__str__()
-
 
 from stopwords import *
 

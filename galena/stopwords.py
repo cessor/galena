@@ -24,7 +24,6 @@ class Lexicon(object):
         return item in self._iterables
 
 
-
 class NltkStopwords(object):
 
     def __iter__(self):
