@@ -1,5 +1,5 @@
 import os
-import json
+
 import random
 from .filesystem import *
 from .document import Document
@@ -8,17 +8,6 @@ from .document import Document
 # Stem document
 # docs <- tm_map(docs,stemDocument)
 
-
-class Json(object):
-
-    def __init__(self, file):
-        self._file = file
-
-    def dict(self):
-        return json.loads(self._file.content())
-
-    def __getattr__(self, name):
-        return self.dict()[name]
 
 
 class Limited(object):
