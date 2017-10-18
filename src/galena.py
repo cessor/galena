@@ -5,12 +5,12 @@ import datetime
 import itertools
 
 import numpy as np
-
-from moment import Moment
 from multiprocessing import Pool
-from corpus import *
-from prepare import *
-from lda import *
+
+from galena.moment import Moment
+from galena.corpus import *
+from galena.lda import *
+
 
 #from documents import documents as load_all_documents
 
@@ -19,7 +19,6 @@ from lda import *
 # This is deactivated at the moment
 # import multiprocessing
 # N_JOBS = multiprocessing.cpu_count() * 2
-
 
 
 def save(i, params, perplexity, start, end):
@@ -33,6 +32,7 @@ def save(i, params, perplexity, start, end):
 
 
 class FloatRange(object):
+
     def __init__(self, start, end, step, precision=4):
         self._start = start
         self._end = end
@@ -57,9 +57,8 @@ def make_run(run):
     # Corpus -> documents() returns Contents
     # Corpus -> holdout() returns Contents
 
-
     document_term_matrix = DocumentTermMatrix(
-        Contents(documents),
+        documents,
         CountVectorizer(
             **CountVectorizerConfig(min_df=0.1, max_df=0.9).config()
         )
@@ -67,7 +66,6 @@ def make_run(run):
 
     # Before, eta was fixed at 0.5
     #ALPHA = 0.365
-
 
     lda = LatentDirichletAllocationModel(
         document_term_matrix,
@@ -81,7 +79,7 @@ def make_run(run):
     # The LDA, so that the LDAModel cares about it.
 
     validation_terms = document_term_matrix.transform(
-        Contents(holdout)
+        holdout
     )
 
     perplexity = topics.perplexity(validation_terms)
@@ -91,24 +89,15 @@ def make_run(run):
 
 if __name__ == '__main__':
 
-    stopwords = Stopwords(
-        Lexicon(
+    waste = (NewLines(), Dashes(), Fragments(), Gaps())
+    stopwords = Stopwords(Lexicon(StopwordsFolder(), NltkStopwords()))
 
-        )
-    )
+    print(waste)
 
-    preparations = [
-        text,
-        remove_new_lines,
-        remove_dashes,
-        str.lower,
-        remove_character_fragments,
-        remove_spaces,
-        stopwords.remove
-    ]
+    exit()
 
     holdout = Holdout(
-        Fixed(Shuffled(Corpus(Directory('corpus_oo'), preparations))),
+        Fixed(Shuffled(Corpus(Directory('corpus_oo'), waste, stopwords))),
         Percent(10)
     )
 
@@ -121,8 +110,10 @@ if __name__ == '__main__':
         for eta in etas:
             runs.append((alpha, eta))
 
-    runs = [(i, alpha, eta, holdout.documents(), holdout.holdout(), N_TOPICS)
-         for i, (alpha, eta) in enumerate(runs)]
+    a_ = Contents(holdout.documents())
+    b_ = Contents(holdout.holdout())
+    runs = [(i, alpha, eta, a_, b_, N_TOPICS)
+            for i, (alpha, eta) in enumerate(runs)]
 
     print('Running this shit')
     with Pool(processes=16) as pool:
@@ -134,7 +125,6 @@ if __name__ == '__main__':
     # start = datetime.datetime.now()
     # init_ts = datetime.datetime.now()
 
-
     # #print(l.get_params(deep=True))
     # #print(l.perplexity(m2.matrix()))
 
@@ -145,11 +135,9 @@ if __name__ == '__main__':
     # end = datetime.datetime.now()
     # print('Elapsed', end - start)
 
-
     # tfidf_matrix = tfidf_vectorizer
     # end = datetime.datetime.now()
     # print('Elapsed', end - start)
-
 
     # # n_jobs=N_JOBS
 
@@ -177,4 +165,3 @@ if __name__ == '__main__':
 # tf = tf_vectorizer.fit_transform(data_samples)
 # print("done in %0.3fs." % (time() - t0))
 # print()
-

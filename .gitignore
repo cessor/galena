@@ -2,7 +2,7 @@
 .cached_files/
 .ipynb_checkpoints/
 corpus/
-output/
+output/*
 
 
 # Byte-compiled / optimized / DLL files

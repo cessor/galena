@@ -2,33 +2,31 @@ import os
 
 import random
 from .filesystem import *
-from .document import Document
+from .document import Document, Text, String, AllowedCharacters
 
 # Todo: Stemming
 # Stem document
 # docs <- tm_map(docs,stemDocument)
 
 
-
-class Limited(object):
-
-    def __init__(self, corpus):
-        self._corpus = corpus
-
-    def documents(self):
-        return self._corpus.documents()[:20]
-
-
 class Corpus(object):
-
-    def __init__(self, files, preparations):
+    def __init__(self, files, waste, stopwords):
         self._files = files
-        self._preparations = preparations
-        self._documents = []
+        self._waste = waste
+        self._stopwords = stopwords
+
+    def _document(self, file):
+        string = file.content()
+        return Document(
+            Text(
+                String(AllowedCharacters(string)),
+                without=self._waste
+            ),
+            without=self._stopwords
+        )
 
     def documents(self):
-        raise NotImplementedError()
-        return [Document(file, self._preparations)
+        return [self._document(file)
                 for file in self._files]
 
 
@@ -47,9 +45,8 @@ class Shuffled(object):
         self._corpus = corpus
 
     def documents(self):
-        documents = self._corpus.documents()
-        random.shuffle(documents)
-        return documents
+        documents_ = list(self._corpus.documents())
+        return random.sample(documents_, len(documents_))
 
 
 class Fixed(object):

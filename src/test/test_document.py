@@ -1,6 +1,8 @@
 from kazookid import Substitute
 from nose.tools import *
 
+from galena.document import *
+
 
 def test_allowed_characters():
     # Arrange
@@ -81,7 +83,6 @@ def test_stopwords():
     assert_equal(words, ['term'])
 
 
-
 def test_document():
     from galena.document import Document
 
@@ -99,31 +100,3 @@ def test_document():
 
     # Assert
     assert_equal(str_, 'c d')
-
-
-def test_integration():
-
-    from galena.document import Document, Text, String, AllowedCharacters
-    from galena.stopwords import Stopwords, Lexicon
-    from galena.remove import NewLines, Dashes, Fragments, Gaps
-
-    # Arrange
-    string = "The - quick brown     fox JUMPS over the lazy dd   dog."
-
-    # System under Test
-    text = Text(
-        String(AllowedCharacters(string)),
-        without=(NewLines(), Dashes(), Fragments(), Gaps())
-    )
-
-    stopwords = Stopwords(
-        Lexicon(['dog', 'fox', 'quick', 'brown'])
-    )
-
-    document = Document(text, without=stopwords)
-
-    # Act
-    result = document.content()
-
-    # Assert
-    assert_equal(result, 'the jumps over the lazy')

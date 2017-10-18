@@ -1,6 +1,7 @@
 # encoding: utf-8
 import string
 
+
 class Document(object):
 
     def __init__(self, text, without):
@@ -57,6 +58,7 @@ class Lines(object):
 
 
 class String(object):
+
     def __init__(self, characters):
         self._characters = characters
 
