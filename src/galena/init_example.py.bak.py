@@ -1,0 +1,22 @@
+Holdout(
+    Percent(25),
+    Fixed(
+        Shuffled(
+            Corpus(
+                Directory('./documents'),
+                waste=(
+                    NewLines(),
+                    Gaps(),
+                    Dashes(),
+                    Fragments()
+                ),
+                stopwords=Stopwords(
+                    Lexicon(
+                        NltkStopwords(),
+                        StopwordsFolder('./stopwords')
+                    )
+                )
+            )
+        )
+    )
+)

@@ -44,3 +44,5 @@ class StopwordsFolder(object):
                 for word in Words(line):
                     if word:
                         yield word.strip().lower()
+
+
